@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 public class BankAccountMapperImpl {
 
     public CustomerDTO fromCustomer(Customer customer){
-        CustomerDTO customerDTO=new CustomerDTO();
-        BeanUtils.copyProperties(customer,customerDTO);//copier les proprietes d'un objet vers un autre
+        CustomerDTO customerDTO=new CustomerDTO(); // creer un dto
+        BeanUtils.copyProperties(customer,customerDTO);//copier les proprietes d'un objet vers un dto
         return customerDTO;
     }
     public Customer fromCustomerDTO(CustomerDTO customerDTO){
@@ -25,15 +25,15 @@ public class BankAccountMapperImpl {
         return customer;
     }
     public SavingBankAccountDTO fromSavingBankAccount(SavingAccount savingAccount){
-        SavingBankAccountDTO savingBankAccountDTO=new SavingBankAccountDTO();
-        BeanUtils.copyProperties(savingAccount,savingBankAccountDTO);
-        savingBankAccountDTO.setCustomerDTO(fromCustomer(savingAccount.getCustomer()));
+        SavingBankAccountDTO savingBankAccountDTO=new SavingBankAccountDTO();//creer un objet
+        BeanUtils.copyProperties(savingAccount,savingBankAccountDTO); // trasnferer les attributs de savingbankaccount mais pas le customer
+        savingBankAccountDTO.setCustomerDTO(fromCustomer(savingAccount.getCustomer()));// on est oblige de transferer les attribut de customer a l'aide de la methode fromCustomer qui prend un customer et retourne un costumerDTO
         savingBankAccountDTO.setType(savingAccount.getClass().getSimpleName());
         return savingBankAccountDTO;
     }
     public SavingAccount fromSavingBankAccountDTO(SavingBankAccountDTO savingBankAccountDTO){
         SavingAccount savingAccount=new SavingAccount();
-        BeanUtils.copyProperties(savingBankAccountDTO,savingAccount);
+        BeanUtils.copyProperties(savingBankAccountDTO,savingAccount);// transfere les proprietes d'un dto vers un objet
         savingAccount.setCustomer(fromCustomerDTO(savingBankAccountDTO.getCustomerDTO()));
         return savingAccount;
     }

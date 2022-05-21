@@ -1,4 +1,4 @@
-package ma.EMSI.restcontroller;
+package ma.EMSI.controllers;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import ma.EMSI.dtos.CustomerDTO;
 import ma.EMSI.exceptions.CustomerNotFoundException;
-import ma.EMSI.services.BankAccountService;
+import ma.EMSI.services.interfaces.CustomerService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,35 +27,35 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class CustomerRestController {
 	
-	private BankAccountService bankAccountService;
+	private CustomerService customerService;
 	
-	@GetMapping("/costumer")
+	@GetMapping("/list")
 	@ResponseBody
 	public List<CustomerDTO> customers(){
-		return bankAccountService.listCustomers();
+		return customerService.listCustomers();
 	}
 	
-	@GetMapping("/costumers/{id}")
+	@GetMapping("/list/{id}")
 	@ResponseBody
 	public CustomerDTO getCustomer(@PathVariable(name = "id") Long customerId) throws CustomerNotFoundException {
-		return bankAccountService.getCustomer(customerId);
+		return customerService.getCustomer(customerId);
 	}
 	
 	@PostMapping("/save")
 	@ResponseBody
 	public CustomerDTO saveCustomer(@RequestBody CustomerDTO request) {
-		return bankAccountService.saveCustomer(request);
+		return customerService.saveCustomer(request);
 	}
 	
 	@PutMapping("/update/{customerId}")
 	@ResponseBody
 	public CustomerDTO updateCustomer(@PathVariable Long customerId, @RequestBody CustomerDTO customerDTO) {
 		customerDTO.setId(customerId);
-		return bankAccountService.updateCustomer(customerDTO);
+		return customerService.updateCustomer(customerDTO);
 	}
 	
 	@DeleteMapping("/delete/{id}")
 	public void deleteCustomer(@PathVariable Long id) {
-		bankAccountService.deleteCustomer(id);
+		customerService.deleteCustomer(id);
 	}
 }
