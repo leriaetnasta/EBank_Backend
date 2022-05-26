@@ -1,16 +1,21 @@
 package ma.EMSI.controllers;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.EMSI.dtos.AccountHistoryDTO;
 import ma.EMSI.dtos.AccountOperationDTO;
 import ma.EMSI.exceptions.BankAccountNotFoundException;
 import ma.EMSI.services.interfaces.AccountOperationService;
 import ma.EMSI.services.interfaces.BankAccountService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RestController
+@RequestMapping("/ebank/Operations")
+@Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class OperationRestController {
     private AccountOperationService accountOperationService;
     @GetMapping("/operations/{accountId}")

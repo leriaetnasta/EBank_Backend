@@ -3,6 +3,7 @@ package ma.EMSI.controllers;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.EMSI.dtos.CustomerDTO;
 import ma.EMSI.exceptions.CustomerNotFoundException;
@@ -25,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+
 public class CustomerRestController {
 	
 	private CustomerService customerService;
