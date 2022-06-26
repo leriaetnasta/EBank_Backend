@@ -4,6 +4,7 @@ import lombok.Data;
 import ma.EMSI.enums.OperationType;
 
 import java.util.Date;
+
 @Data
 public class AccountOperationDTO {
     private Long id;
@@ -12,3 +13,4 @@ public class AccountOperationDTO {
     private OperationType type;
     private String description;
 }
+

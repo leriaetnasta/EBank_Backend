@@ -1,10 +1,8 @@
 package ma.EMSI.dtos;
-
 import lombok.Data;
 import ma.EMSI.enums.AccountStatus;
 
 import java.util.Date;
-
 @Data
 public class SavingBankAccountDTO extends BankAccountDTO {
     private String id;

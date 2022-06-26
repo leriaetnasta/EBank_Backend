@@ -1,6 +1,5 @@
 package ma.EMSI.services;
 
-import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -19,13 +18,16 @@ import ma.EMSI.repositories.AccountOperationRepository;
 import ma.EMSI.repositories.BankAccountRepository;
 import ma.EMSI.repositories.CustomerRepository;
 import ma.EMSI.services.interfaces.BankAccountService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 @AllArgsConstructor
-@Slf4j
+@Slf4j //journalisation log4j: pour l'utiliser il ya des api comme slf4j; c'est un framework qui permet la journalisation
+
 public class BankAccountServiceImpl implements BankAccountService {
 
 
@@ -102,7 +104,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 		debit(accountIdSource,amount,"Transfer to "+accountIdDestination);
 		credit(accountIdDestination,amount,"Transfer from "+accountIdSource);}
 	@Override
-	public List<BankAccountDTO> listBankAccount(){
+	public List<BankAccountDTO> bankAccountList(){
 		List<BankAccount> bankAccounts = bankAccountRepository.findAll();
 		List<BankAccountDTO> bankAccountDTOS = bankAccounts.stream().map(bankAccount -> {
 			if (bankAccount instanceof SavingAccount) {
@@ -112,8 +114,26 @@ public class BankAccountServiceImpl implements BankAccountService {
 				CurrentAccount currentAccount = (CurrentAccount) bankAccount;
 				return dtoMapper.fromCurrentBankAccount(currentAccount);
 			}
-		}).collect(Collectors.toList());//collecter des objets de type dto
-		return bankAccountDTOS;}
+		}).collect(Collectors.toList());
+		return bankAccountDTOS;
+	}
+
+	@Override
+	public AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException {
+		BankAccount bankAccount=bankAccountRepository.findById(accountId).orElse(null);
+		if(bankAccount==null) throw new BankAccountNotFoundException("Account not Found");
+		Page<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountIdOrderByOperationDateDesc(accountId, PageRequest.of(page, size));
+		AccountHistoryDTO accountHistoryDTO=new AccountHistoryDTO();
+		List<AccountOperationDTO> accountOperationDTOS = accountOperations.getContent().stream().map(op -> dtoMapper.fromAccountOperation(op)).collect(Collectors.toList());
+		accountHistoryDTO.setAccountOperationDTOS(accountOperationDTOS);
+		accountHistoryDTO.setAccountId(bankAccount.getId());
+		accountHistoryDTO.setBalance(bankAccount.getBalance());
+		accountHistoryDTO.setCurrentPage(page);
+		accountHistoryDTO.setPageSize(size);
+		accountHistoryDTO.setTotalPages(accountOperations.getTotalPages());
+		return accountHistoryDTO;
+	}
+
 
 
 

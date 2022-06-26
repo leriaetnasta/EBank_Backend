@@ -9,10 +9,11 @@ import java.util.List;
 @Service
 public interface CustomerService {
     CustomerDTO saveCustomer(CustomerDTO customerDTO);
-    CustomerDTO updateCustomer(CustomerDTO customerDTO);
+    CustomerDTO updateCustomer(CustomerDTO customerDTO) throws CustomerNotFoundException;
     List<CustomerDTO> listCustomers();
     void deleteCustomer(Long customerId);
     CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException;
 
 
+    List<CustomerDTO> searchCustomers(String keyword);
 }

@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/ebank/Operations")
-@Slf4j
 @AllArgsConstructor
-@NoArgsConstructor
+@Slf4j
+@CrossOrigin("*")
 public class OperationRestController {
     private AccountOperationService accountOperationService;
     @GetMapping("/operations/{accountId}")

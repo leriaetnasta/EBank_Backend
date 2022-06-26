@@ -33,7 +33,8 @@ public class EBankBackendApplication {
 		SpringApplication.run(EBankBackendApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
+	//pour tester, pour chaque client, il a un compte et pour chaque compte il a des operations
 	CommandLineRunner commandLineRunner(BankAccountService bankAccountService, CustomerService customerService){
 		return args -> {
 			Stream.of("LOubna","Hayat","Imane").forEach(name->{
@@ -42,8 +43,11 @@ public class EBankBackendApplication {
 				customer.setEmail(name+"@gmail.com");
 				customerService.saveCustomer(customer);
 			});
+			//listcustomers contient la liste des clients
+			// on l'utilise pour creer un compte pour chaque client
 			customerService.listCustomers().forEach(customer->{
 				try {
+					//savecurrentbankaccount au lieu de setters
 					bankAccountService.saveCurrentBankAccount(Math.random()*90000,9000,customer.getId());
 					bankAccountService.saveSavingBankAccount(Math.random()*120000,5.5,customer.getId());
 
@@ -51,7 +55,7 @@ public class EBankBackendApplication {
 					e.printStackTrace();
 				}
 			});
-			List<BankAccountDTO> bankAccounts = bankAccountService.listBankAccount();
+			List<BankAccountDTO> bankAccounts = bankAccountService.bankAccountList();
 			for (BankAccountDTO bankAccount:bankAccounts){
 				for (int i = 0; i <10 ; i++) {
 					String accountId;
@@ -66,50 +70,7 @@ public class EBankBackendApplication {
 			}
 		};
 	}
-	//@Bean
-	CommandLineRunner commandLineRunner(CustomerRepository customerRepository,
-							BankAccountRepository bankAccountRepository,
-							AccountOperationRepository accountOperationRepository){
-		return args -> {
-			Stream.of("loubna","hayat","imane").forEach(name->{
-				Customer customer=new Customer();
-				customer.setName(name);
-				customer.setEmail(name+"@gmail.com");
-				customerRepository.save(customer);
-			});
-			customerRepository.findAll().forEach(c->{
-				CurrentAccount currentAccount=new CurrentAccount();
-				currentAccount.setId(UUID.randomUUID().toString());
-				currentAccount.setBalance(Math.random()*10000);
-				currentAccount.setCreatedAt(new Date());
-				currentAccount.setStatus(AccountStatus.CREATED);
-				currentAccount.setCustomer(c);
-				currentAccount.setOverDraft(9000);
-				bankAccountRepository.save(currentAccount);
 
-				SavingAccount savingAccount=new SavingAccount();
-				savingAccount.setId(UUID.randomUUID().toString());
-				savingAccount.setBalance(Math.random()*10000);
-				savingAccount.setCreatedAt(new Date());
-				savingAccount.setStatus(AccountStatus.CREATED);
-				savingAccount.setCustomer(c);
-				savingAccount.setInterestRate(5.5);
-				bankAccountRepository.save(savingAccount);
 
-			});
-			bankAccountRepository.findAll().forEach(a->{
-				for (int i = 0; i <10 ; i++) {
-					AccountOperation accountOperation=new AccountOperation();
-					accountOperation.setOperationDate(new Date());
-					accountOperation.setAmount(Math.random()*10000);
-					accountOperation.setType(Math.random()>0.5? OperationType.DEBIT: OperationType.CREDIT);
-					accountOperation.setBankAccount(a);
-					accountOperationRepository.save(accountOperation);
-				}
-
-			});
-		};
-
-	}
 
 }
